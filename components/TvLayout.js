@@ -5,19 +5,14 @@ import { View, StyleSheet, Text } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
 export const TvLayout = () => {
+
   const dispatch = useDispatch();
   let tvState = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(getLocations("192.168.1.33"));
-    // dispatch(tune("192.168.1.33", "10", "B42A0E5118AE"));
-    // tvState.remote.status.forEach(tv => dispatch(getTuned("192.168.1.33", tv.clientAddr)));
-    dispatch(getTuned("192.168.1.33", "B42A0E5118AE"));
-    // dispatch(processKey("192.168.1.33", "poweron", "keyPress","B42A0E5118AE"));
-    
-    //dispatch(getTuned("192.168.1.33", "B42A0E5118AE"));
+    dispatch(getLocations("192.168.1.33", true));
   }, [dispatch]);
-
+ 
   const handleChannelDrop = (channel, tv) => {
     console.log(channel);
   }
@@ -25,12 +20,12 @@ export const TvLayout = () => {
   if (tvState.remote.rawLocations.length === 0) {
     return <View style={styles.container}></View>;
   } else {
-      console.log("in tvlayout");
-      console.log(tvState.remote.status);
+    console.log("Render:");
+    console.log(tvState.remote.status);
     return (
       <DraxProvider>
         <View style={styles.container}>
-          <DraxView style={styles.tvTL} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}><Text>{tvState.remote.status[0].zchannel}</Text></DraxView>
+          <DraxView style={styles.tvTL} onDragStart={() => { console.log("start drag") }} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}><Text>{tvState.remote.status[0].zchannel}</Text></DraxView>
           <Text style={styles.tvTR}>{tvState.remote.status[1].zchannel}</Text>
           <Text style={styles.tvMid}>{tvState.remote.status[2].zchannel}</Text>
           <Text style={styles.tvBL}>{tvState.remote.status[3].zchannel}</Text>
