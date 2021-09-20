@@ -17,40 +17,42 @@ const _tune = () => ({
   type: "TUNE"
 })
 
-export const getLocations = (ip, tuned = false) => {
-  return async dispatch => {
-    try {
-      console.log("getLocations fetch");
-      const response = await fetch(
-        "http://" + ip + ":8080/info/getLocations?type=1"
-      )
-        .then((response) => response.json())
-        .then((json) => {
-          return json.locations.map((location) => {
-            location['clientAddr'] = location['clientAddr'].toUpperCase();
-            return location;
-          });
+export const initTVs = (ip) => {
+  return (dispatch, getState) => {
+    return dispatch(getLocations(ip)).then(() => {
+      const tvs = getState().remote.status;
+      for (const tv of tvs) {
+        console.log("tv: " + tv.clientAddr);
+        dispatch(processKey(ip, "poweron", "keyPress", tv.clientAddr)).then(() => {
+          return dispatch(getTuned(ip, tv.clientAddr))
         })
-      dispatch(_getLocations(response));
-      if(tuned) {
-        response.forEach(tv => {
-          dispatch(getTuned(ip, tv.clientAddr));
+      };
+      console.log("initTVs");
+      console.log(getState().remote.status);
+    })
+  }
+}
+
+export const getLocations = (ip) => {
+  return dispatch => {
+    return fetch("http://" + ip + ":8080/info/getLocations?type=1")
+      .then((response) => response.json())
+      .then((json) => {
+        return json.locations.map((location) => {
+          location['clientAddr'] = location['clientAddr'].toUpperCase();
+          return location;
         });
-      }
-    }
-    catch (error) {
-      console.error(error);
-    }
+      }).then((response) => {
+        dispatch(_getLocations(response));
+      })
   };
 
 };
 
 export const getTuned = (ip, clientAddr) => {
-  return async (dispatch) => {
-    console.log("getTuned fetch");
-    const response = await fetch(
-      "http://" + ip + ":8080/tv/getTuned?clientAddr=" + clientAddr
-    )
+  return dispatch => {
+    //console.log("getTuned fetch");
+    return fetch("http://" + ip + ":8080/tv/getTuned?clientAddr=" + clientAddr)
       .then((response) => {
         if (response.status == 200) {
           return response;
@@ -73,25 +75,22 @@ export const getTuned = (ip, clientAddr) => {
 };
 
 export const processKey = (ip, key, hold, clientAddr) => {
-  return async (dispatch) => {
-    console.log("processKey fetch");
-    const response = await fetch(
-      "http://" + ip + ":8080/remote/processKey?key=" + key + "&hold=" + hold + "&clientAddr=" + clientAddr
-    )
+  return dispatch => {
+    // console.log("processKey fetch");
+    return fetch("http://" + ip + ":8080/remote/processKey?key=" + key + "&hold=" + hold + "&clientAddr=" + clientAddr)
       .then((response) => response.json())
-      .then((json) => {
-        return json;
+      .then((response) => {
+        dispatch(_processKey(response));
       })
       .catch((error) => {
         console.error(error);
       });
-    dispatch(_processKey(response));
   }
 }
 
 export const tune = (ip, chan, clientAddr) => {
   return async (dispatch) => {
-    console.log("tune fetch");
+    //console.log("tune fetch");
     const response = await fetch(
       "http://" + ip + ":8080/tv/tune?major=" + chan + "&clientAddr=" + clientAddr
     )

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getLocations, getTuned, processKey, tune } from "../actions/remoteActions";
+import { getLocations, getTuned, initTVs, processKey, tune } from "../actions/remoteActions";
 import { View, StyleSheet, Text } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 import { Icon } from "react-native-elements"
@@ -11,7 +11,16 @@ export const TvLayout = ({ navigation }) => {
   let tvState = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(getLocations("192.168.1.33", true));
+    dispatch(initTVs("192.168.1.33"));
+    // dispatch(getLocations("192.168.1.33"))
+    //   .then((response) => {
+    // console.log("in then");
+    // dispatch(getTuned("192.168.1.33", "0"));
+    // console.log(response);
+    // console.log(tvState.remote.status);
+    // });
+    // console.log("After then.");
+    // console.log(tvState.remote.status);
   }, [dispatch]);
 
   const handleChannelDrop = (channel, tv) => {
@@ -28,12 +37,14 @@ export const TvLayout = ({ navigation }) => {
         <View style={styles.container}>
           <Icon style={styles.settingsIcon} onPress={() => navigation.navigate("Edit")} reverse name="settings" type="ionicon" color="red" />
           <DraxView style={[styles.tvContainer, styles.tvTL]} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}>
-            <Text>{tvState.remote.status[1].zchannel}</Text>
-            <Text>{tvState.remote.status[1].zcallsign}</Text>
-            <Text>{tvState.remote.status[1].ztitle}</Text>
+            <Text>{tvState.remote.status[0].zchannel}</Text>
+            <Text>{tvState.remote.status[0].zcallsign}</Text>
+            <Text>{tvState.remote.status[0].ztitle}</Text>
           </DraxView>
           <DraxView style={[styles.tvContainer, styles.tvTR]} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}>
             <Text>{tvState.remote.status[1].zchannel}</Text>
+            <Text>{tvState.remote.status[1].zcallsign}</Text>
+            <Text>{tvState.remote.status[1].ztitle}</Text>
           </DraxView>
           <DraxView style={[styles.tvContainer, styles.tvMid]} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}>
             <Text>{tvState.remote.status[3].zchannel}</Text>
@@ -41,10 +52,14 @@ export const TvLayout = ({ navigation }) => {
             <Text>{tvState.remote.status[3].ztitle}</Text>
           </DraxView>
           <DraxView style={[styles.tvContainer, styles.tvBL]} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}>
-            <Text>{tvState.remote.status[1].zchannel}</Text>
+            <Text>{tvState.remote.status[2].zchannel}</Text>
+            <Text>{tvState.remote.status[2].zcallsign}</Text>
+            <Text>{tvState.remote.status[2].ztitle}</Text>
           </DraxView>
           <DraxView style={[styles.tvContainer, styles.tvBR]} onReceiveDragEnter={({ dragged: { payload } }) => { handleChannelDrop(payload) }}>
-            <Text>{tvState.remote.status[1].zchannel}</Text>
+            <Text>{tvState.remote.status[2].zchannel}</Text>
+            <Text>{tvState.remote.status[2].zcallsign}</Text>
+            <Text>{tvState.remote.status[2].ztitle}</Text>
           </DraxView>
           <View style={styles.bottom}>
             <DraxView style={styles.channel} onDragStart={() => { console.log("start drag") }} payload="202">

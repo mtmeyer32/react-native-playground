@@ -10,7 +10,7 @@ export const remoteReducer = (state = remoteDefaultState, action) => {
             })
             return { ...state, rawLocations: action.locations, status: tvs }
         case "GET_TUNED":
-            console.log("GET TUNED REDUCER");
+            //console.log("GET TUNED REDUCER");
             return {
                 ...state,
                 status: state.status.map(tv => {
