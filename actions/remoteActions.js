@@ -17,6 +17,19 @@ const _tune = () => ({
   type: "TUNE"
 })
 
+const _setIp = (ip) => ({
+  type: "SET_IP",
+  ip
+})
+
+export const setIp = (ip) => {
+  return (dispatch) => {
+    dispatch(initTVs(ip)).then(() => {
+      dispatch(_setIp(ip));
+    });
+  }
+}
+
 export const initTVs = (ip) => {
   return (dispatch, getState) => {
     return dispatch(getLocations(ip)).then(() => {
