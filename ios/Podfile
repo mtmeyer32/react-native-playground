@@ -14,6 +14,8 @@ target 'directvRemote' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
+
   target 'directvRemoteTests' do
     inherit! :complete
     # Pods for testing

@@ -21,7 +21,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Remote">
           <Stack.Screen name="Remote" component={TvLayout} />
-          <Stack.Screen name="Edit" component={editLayout} />
+          <Stack.Screen name="Settings" component={editLayout} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

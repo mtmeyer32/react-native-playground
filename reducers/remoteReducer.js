@@ -1,7 +1,9 @@
-const remoteDefaultState = { rawLocations: [], status: [] };
+const remoteDefaultState = { rawLocations: [], status: [], ip: "" };
 
 export const remoteReducer = (state = remoteDefaultState, action) => {
     switch (action.type) {
+        case "SET_IP":
+            return {...state, ip: action.ip}
         case "GET_LOCATIONS":
             console.log("GET LOCATIONS REDUCER");
             let tvs = action.locations.map(tv => {
